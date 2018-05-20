@@ -32,7 +32,6 @@ def init(args):
     """ initialize a todo file in the current dir
     """
     cwd = os.getcwd()
-    print(cwd)
     list_path = os.path.join(cwd, TODO_FILENAME)
     if os.path.exists(list_path):
         print('This directory: {} is already intialized'.format(cwd))
@@ -46,7 +45,7 @@ def init(args):
 
 def list(args):
     td_list = find_and_load_list()
-    print(td_list)
+    sys.stdout.write(td_list.__str__())
 
 
 def add(args):

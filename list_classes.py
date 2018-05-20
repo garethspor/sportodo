@@ -28,16 +28,18 @@ class TodoListItem(object):
         return item_list
 
     def to_json_file(self, path):
-        # print(self.to_serializable())
         with open(path, 'w') as fileobj:
             json.dump(self.to_serializable(), fileobj, indent=2)
 
-    def __str__(self):
+    def __str__(self, depth=0, prefix=''):
         out_str = ''
-        for item in self.sub_items:
-            out_str += '{}\n'.format(item.text)
+        for index, item in enumerate(self.sub_items):
+            indent = ' ' * depth
+            check_box = '({})'.format('x' if item.done else ' ')
+            item_prefix = '{}{}.'.format(prefix, index)
+            out_str += '{}{} {} {}\n'.format(indent, check_box, item_prefix, item.text)
             if item.sub_items:
-                out_str += item.__str__()
+                out_str += item.__str__(depth=depth+1, prefix=item_prefix)
         return out_str
 
     @staticmethod
@@ -58,4 +60,3 @@ class TodoListItem(object):
             for sub_item in sub_items:
                 item.add_item(TodoListItem.constrct_item_from_dict(sub_item))
         return item
-
