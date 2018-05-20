@@ -2,9 +2,11 @@
 A simple command line todo list utility
 
 ## Get started
-initialize a new todo list in your current working dir
+initialize a new todo list in your current working dir:
+
 `sportodo init`
 
 ## Usage
-enumerate your list
+enumerate your list:
+
 `sportodo list`
