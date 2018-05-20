@@ -1,4 +1,4 @@
-# sportodo
+# todolo
 
 A simple command line todo list utility
 
@@ -6,10 +6,10 @@ A simple command line todo list utility
 
 initialize a new todo list in your current working dir:
 
-```sportodo init```
+```todolo init```
 
 ## Usage
 
 enumerate your list:
 
-```sportodo list```
+```todolo list```
