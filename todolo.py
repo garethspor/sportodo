@@ -12,23 +12,20 @@ from list_classes import TodoListItem
 TODO_FILENAME = '.todolo.json'
 
 
-def find_list(path):
+def find_list(path=os.getcwd()):
     while path:
         test_path = os.path.join(path, TODO_FILENAME)
         if os.path.exists(test_path):
             return test_path
         if path == os.path.sep:
-            return None
+            print('Unable to find any todo lists anywhere along the path: {}'.format(path))
+            sys.exit(1)
         path = os.path.split(path)[0]
 
 
-def find_and_load_list(path):
+def find_and_load_list(path=os.getcwd()):
     list_path = find_list(path)
-    if list_path is None:
-        return None
-    with open(list_path, 'r') as fileobj:
-        list = json.load(fileobj)
-    return list
+    return TodoListItem.construct_from_json(list_path)
 
 
 def init(args):
@@ -48,15 +45,16 @@ def init(args):
 
 
 def list(args):
-    list = find_and_load_list(os.getcwd())
-    print(list)
+    td_list = find_and_load_list()
+    print(td_list)
 
 
 def add(args):
-    print(args.text)
-    new_item = TodoListItem.constrct_item_from_dict({'text':args.text})
-    print(new_item)
-    import pdb; pdb.set_trace()
+    list_path = find_list()
+    td_list = TodoListItem.construct_from_json(list_path)
+    td_list.add_item(TodoListItem(args.text))
+    td_list.to_json_file(list_path)
+    # import pdb; pdb.set_trace()
 
 
 def main():
