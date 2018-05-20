@@ -54,7 +54,6 @@ def add(args):
     td_list = TodoListItem.construct_from_json(list_path)
     td_list.add_item(TodoListItem(args.text))
     td_list.to_json_file(list_path)
-    # import pdb; pdb.set_trace()
 
 
 def main():
