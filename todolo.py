@@ -7,7 +7,7 @@ import json
 import os
 import sys
 
-TODO_FILENAME = '.sportodo.json'
+TODO_FILENAME = '.todolo.json'
 
 
 def find_list(path):
