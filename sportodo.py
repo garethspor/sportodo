@@ -50,6 +50,10 @@ def list(args):
     print(list)
 
 
+def add(args):
+    print(args.text)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest='cmd')
@@ -59,10 +63,18 @@ def main():
         help='initialize a todo list in current working dir')
     init_subparser.set_defaults(func=init)
 
-    init_subparser = subparsers.add_parser(
+    list_subparser = subparsers.add_parser(
         'list',
         help='enumerate the todo list items')
-    init_subparser.set_defaults(func=list)
+    list_subparser.set_defaults(func=list)
+
+    add_subparser = subparsers.add_parser(
+        'add',
+        help='add a todo item')
+    add_subparser.add_argument(
+        'text',
+        help='text of todo')
+    add_subparser.set_defaults(func=add)
 
     args = parser.parse_args()
     return args.func(args)
