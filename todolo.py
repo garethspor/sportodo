@@ -60,6 +60,7 @@ def set_done(index, val):
     td_list = TodoListItem.construct_from_json(list_path)
     item = td_list.get_item_by_indecies(index)
     item.done = val
+    print(item.to_str())
     td_list.to_json_file(list_path)
 
 def done(args):

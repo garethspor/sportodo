@@ -38,7 +38,7 @@ class TodoListItem(object):
             return ''
         return TodoListItem.INDEX_SEP.join([str(index) for index in indicies])
 
-    def item_to_str(self, depth=0, indicies=None):
+    def to_str(self, depth=0, indicies=None):
         indent = ' ' * depth
         check_box = '({})'.format('x' if self.done else ' ')
         prefix = TodoListItem.format_indices(indicies)
@@ -50,7 +50,7 @@ class TodoListItem(object):
         indicies = indicies if indicies else []
         for index, item in enumerate(self.sub_items):
             item_indicies = indicies + [index]
-            out_str += item.item_to_str(depth=depth, indicies=item_indicies)
+            out_str += item.to_str(depth=depth, indicies=item_indicies)
             out_str += item.sub_items_to_str(depth=depth+1, indicies=item_indicies)
         return out_str
 
@@ -60,7 +60,6 @@ class TodoListItem(object):
     def get_item_by_indecies(self, indicies):
         if isinstance(indicies, basestring):
             return self.get_item_by_indecies(TodoListItem.convert_string_to_indicies(indicies))
-        print(indicies)
         if len(indicies) == 0:
             return self
         return self.sub_items[indicies[0]].get_item_by_indecies(indicies[1:])
