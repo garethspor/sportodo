@@ -55,11 +55,18 @@ def add(args):
     td_list.to_json_file(list_path)
 
 
-def done(args):
+def set_done(index, val):
     list_path = find_list()
     td_list = TodoListItem.construct_from_json(list_path)
-    item = td_list.get_item_by_indecies(args.index)
-    import pdb; pdb.set_trace()
+    item = td_list.get_item_by_indecies(index)
+    item.done = val
+    td_list.to_json_file(list_path)
+
+def done(args):
+    set_done(args.index, True)
+
+def notdone(args):
+    set_done(args.index, False)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -90,6 +97,14 @@ def main():
         'index',
         help='index of todo')
     done_subparser.set_defaults(func=done)
+
+    done_subparser = subparsers.add_parser(
+        'notdone',
+        help='mark a todo item incomplete')
+    done_subparser.add_argument(
+        'index',
+        help='index of todo')
+    done_subparser.set_defaults(func=notdone)
 
     args = parser.parse_args()
     return args.func(args)
