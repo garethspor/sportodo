@@ -7,6 +7,8 @@ import json
 import os
 import sys
 
+from list_classes import TodoListItem
+
 TODO_FILENAME = '.todolo.json'
 
 
@@ -52,6 +54,9 @@ def list(args):
 
 def add(args):
     print(args.text)
+    new_item = TodoListItem.constrct_item_from_dict({'text':args.text})
+    print(new_item)
+    import pdb; pdb.set_trace()
 
 
 def main():
