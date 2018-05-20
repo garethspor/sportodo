@@ -31,16 +31,22 @@ class TodoListItem(object):
         with open(path, 'w') as fileobj:
             json.dump(self.to_serializable(), fileobj, indent=2)
 
-    def __str__(self, depth=0, prefix=''):
+    def item_to_str(self, depth=0, prefix=''):
+        indent = ' ' * depth
+        check_box = '({})'.format('x' if self.done else ' ')
+        out_str = '{}{} {} {}\n'.format(indent, check_box, prefix, self.text)
+        return out_str
+
+    def sub_items_to_str(self, depth=0, prefix=''):
         out_str = ''
         for index, item in enumerate(self.sub_items):
-            indent = ' ' * depth
-            check_box = '({})'.format('x' if item.done else ' ')
             item_prefix = '{}{}.'.format(prefix, index)
-            out_str += '{}{} {} {}\n'.format(indent, check_box, item_prefix, item.text)
-            if item.sub_items:
-                out_str += item.__str__(depth=depth+1, prefix=item_prefix)
+            out_str += self.item_to_str(depth=depth, prefix=item_prefix)
+            out_str += item.sub_items_to_str(depth=depth+1, prefix=item_prefix)
         return out_str
+
+    def __str__(self):
+        return self.sub_items_to_str()
 
     @staticmethod
     def construct_from_json(path):
