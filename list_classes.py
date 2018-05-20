@@ -57,6 +57,19 @@ class TodoListItem(object):
     def __str__(self):
         return self.sub_items_to_str()
 
+    def get_item_by_indecies(self, indicies):
+        if isinstance(indicies, basestring):
+            return self.get_item_by_indecies(TodoListItem.convert_string_to_indicies(indicies))
+        print(indicies)
+        if len(indicies) == 0:
+            return self
+        return self.sub_items[indicies[0]].get_item_by_indecies(indicies[1:])
+
+    @staticmethod
+    def convert_string_to_indicies(str):
+        index_strings = str.split(TodoListItem.INDEX_SEP)
+        return [int(index) for index in index_strings]
+
     @staticmethod
     def construct_from_json(path):
         with open(path, 'r') as fileobj:

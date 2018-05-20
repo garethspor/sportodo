@@ -55,6 +55,12 @@ def add(args):
     td_list.to_json_file(list_path)
 
 
+def done(args):
+    list_path = find_list()
+    td_list = TodoListItem.construct_from_json(list_path)
+    item = td_list.get_item_by_indecies(args.index)
+    import pdb; pdb.set_trace()
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest='cmd')
@@ -76,6 +82,14 @@ def main():
         'text',
         help='text of todo')
     add_subparser.set_defaults(func=add)
+
+    done_subparser = subparsers.add_parser(
+        'done',
+        help='mark a todo item complete')
+    done_subparser.add_argument(
+        'index',
+        help='index of todo')
+    done_subparser.set_defaults(func=done)
 
     args = parser.parse_args()
     return args.func(args)
