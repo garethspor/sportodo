@@ -16,6 +16,7 @@ class TodoListItem(object):
     TEXT_FIELD = 'text'
     DONE_FIELD = 'done'
     SUB_ITEMS_FIELD = 'sub_items'
+    INDEX_SEP = '.'
 
     def to_serializable(self):
         item_list = []
@@ -31,18 +32,26 @@ class TodoListItem(object):
         with open(path, 'w') as fileobj:
             json.dump(self.to_serializable(), fileobj, indent=2)
 
-    def item_to_str(self, depth=0, prefix=''):
+    @staticmethod
+    def format_indices(indicies):
+        if indicies is None:
+            return ''
+        return TodoListItem.INDEX_SEP.join([str(index) for index in indicies])
+
+    def item_to_str(self, depth=0, indicies=None):
         indent = ' ' * depth
         check_box = '({})'.format('x' if self.done else ' ')
+        prefix = TodoListItem.format_indices(indicies)
         out_str = '{}{} {} {}\n'.format(indent, check_box, prefix, self.text)
         return out_str
 
-    def sub_items_to_str(self, depth=0, prefix=''):
+    def sub_items_to_str(self, depth=0, indicies=None):
         out_str = ''
+        indicies = indicies if indicies else []
         for index, item in enumerate(self.sub_items):
-            item_prefix = '{}{}.'.format(prefix, index)
-            out_str += self.item_to_str(depth=depth, prefix=item_prefix)
-            out_str += item.sub_items_to_str(depth=depth+1, prefix=item_prefix)
+            item_indicies = indicies + [index]
+            out_str += item.item_to_str(depth=depth, indicies=item_indicies)
+            out_str += item.sub_items_to_str(depth=depth+1, indicies=item_indicies)
         return out_str
 
     def __str__(self):
