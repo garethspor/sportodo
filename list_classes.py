@@ -22,8 +22,9 @@ class TodoListItem(object):
     def to_serializable(self):
         item_list = []
         for item in self.sub_items:
-            item_dict = {TEXT_FIELD: item.text,
-                         DONE_FIELD: item.done}
+            item_dict = {TEXT_FIELD: item.text}
+            if item.done:
+                item_dict[DONE_FIELD] = True
             if item.sub_items:
                 item_dict[SUB_ITEMS_FIELD] = item.to_serializable()
             item_list.append(item_dict)
