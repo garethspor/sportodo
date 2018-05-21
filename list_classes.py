@@ -42,17 +42,19 @@ class TodoListItem(object):
         indent = ' ' * depth
         check_box = '({})'.format('x' if self.done else ' ')
         prefix = TodoListItem.format_indices(indicies)
-        out_str = '{}{} {} {}\n'.format(indent, check_box, prefix, self.text)
+        out_str = '{}{} {} - {}'.format(indent, check_box, prefix, self.text)
+        if self.sub_items:
+            sub_item_str = self.sub_items_to_str(depth=depth + 1, indicies=indicies)
+            out_str = '\n'.join([out_str, sub_item_str])
         return out_str
 
     def sub_items_to_str(self, depth=0, indicies=None):
-        out_str = ''
+        out_strs = []
         indicies = indicies if indicies else []
         for index, item in enumerate(self.sub_items):
             item_indicies = indicies + [index]
-            out_str += item.to_str(depth=depth, indicies=item_indicies)
-            out_str += item.sub_items_to_str(depth=depth+1, indicies=item_indicies)
-        return out_str
+            out_strs.append(item.to_str(depth=depth, indicies=item_indicies))
+        return '\n'.join(out_strs)
 
     def __str__(self):
         return self.sub_items_to_str()

@@ -44,8 +44,7 @@ def init(args):
 
 
 def list(args):
-    td_list = find_and_load_list()
-    sys.stdout.write(td_list.__str__())
+    print(find_and_load_list())
 
 
 def add(args):
