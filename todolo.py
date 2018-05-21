@@ -7,7 +7,7 @@ import json
 import os
 import sys
 
-from list_classes import TodoListItem
+from list_classes import TodoListItem, TodoListIndex
 
 TODO_FILENAME = '.todolo.json'
 
@@ -50,7 +50,6 @@ def list(args):
 def add_base(text, index=None):
     list_path = find_list()
     td_list = TodoListItem.construct_from_json(list_path)
-    # td_list.add_sub_item(TodoListItem(text))
     item = td_list.get_item_by_indecies(index)
     item.add_sub_item(TodoListItem(text))
     td_list.to_json_file(list_path)
@@ -61,15 +60,17 @@ def add(args):
 
 
 def addsub(args):
-    add_base(args.text, index=args.index)
+    index = TodoListIndex(args.index)
+    add_base(args.text, index=index)
 
 
-def set_done(index, val):
+def set_done(index_str, val):
     list_path = find_list()
     td_list = TodoListItem.construct_from_json(list_path)
+    index = TodoListIndex(index_str)
     item = td_list.get_item_by_indecies(index)
     item.done = val
-    print(item.to_str(indicies=index))
+    print(item.to_str(index=index))
     td_list.to_json_file(list_path)
 
 

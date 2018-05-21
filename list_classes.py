@@ -2,6 +2,7 @@
 """
 from __future__ import print_function
 
+import argparse
 import json
 
 class TodoListItem(object):
@@ -40,33 +41,34 @@ class TodoListItem(object):
             return indicies
         return TodoListItem.INDEX_SEP.join([str(index) for index in indicies])
 
-    def to_str(self, depth=0, indicies=None):
+    def to_str(self, depth=0, index=None):
         indent = ' ' * depth
         check_box = '({})'.format('x' if self.done else ' ')
-        prefix = TodoListItem.format_indices(indicies)
-        out_str = '{}{} {} - {}'.format(indent, check_box, prefix, self.text)
+        # prefix = TodoListItem.format_indices(indicies)
+        out_str = '{}{} {} - {}'.format(indent, check_box, index, self.text)
         if self.sub_items:
-            sub_item_str = self.sub_items_to_str(depth=depth + 1, indicies=indicies)
+            sub_item_str = self.sub_items_to_str(depth=depth + 1, index=index)
             out_str = '\n'.join([out_str, sub_item_str])
         return out_str
 
-    def sub_items_to_str(self, depth=0, indicies=None):
+    def sub_items_to_str(self, depth=0, index=None):
         out_strs = []
-        indicies = indicies if indicies else []
-        for index, item in enumerate(self.sub_items):
-            item_indicies = indicies + [index]
-            out_strs.append(item.to_str(depth=depth, indicies=item_indicies))
+        if index is None:
+            index = TodoListIndex()
+        # indicies = indicies if indicies else []
+        for sub_index, item in enumerate(self.sub_items):
+            item_index = index.make_sub_index(sub_index)
+            out_strs.append(item.to_str(depth=depth, index=item_index))
         return '\n'.join(out_strs)
 
     def __str__(self):
         return self.sub_items_to_str()
 
-    def get_item_by_indecies(self, indicies):
-        if isinstance(indicies, basestring):
-            return self.get_item_by_indecies(TodoListItem.convert_string_to_indicies(indicies))
-        if indicies is None or len(indicies) == 0:
+    def get_item_by_indecies(self, index):
+        next_index = index.pop()
+        if next_index is None:
             return self
-        return self.sub_items[indicies[0]].get_item_by_indecies(indicies[1:])
+        return self.sub_items[next_index].get_item_by_indecies(index)
 
     @staticmethod
     def convert_string_to_indicies(str):
@@ -92,6 +94,33 @@ class TodoListItem(object):
                 item.add_sub_item(TodoListItem.constrct_item_from_dict(sub_item))
         return item
 
-class TodoListIndex(object):
-    def __init__(self, index_str=''):
-        # parse index_str into list of numbers
+
+INDEX_SEP = '.'
+
+class TodoListIndex():
+    def __init__(self, init_index=None):
+        if init_index is None:
+            self.index_list = []
+        elif isinstance(init_index, basestring):
+            index_strs = init_index.split(INDEX_SEP)
+            self.index_list = [int(index) for index in index_strs]
+        else:
+            self.index_list = init_index
+
+    def __str__(self):
+        return INDEX_SEP.join([str(index) for index in self.index_list])
+
+    def pop(self):
+        if self.index_list:
+            popped = self.index_list[0]
+            self.index_list = self.index_list[1:]
+            return popped
+        return None
+
+    def make_sub_index(self, sub_index):
+        ret = TodoListIndex(self.index_list)
+        ret.index_list.append(sub_index)
+        return ret
+
+
+
