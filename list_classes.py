@@ -5,6 +5,10 @@ from __future__ import print_function
 import argparse
 import json
 
+TEXT_FIELD = 'text'
+DONE_FIELD = 'done'
+SUB_ITEMS_FIELD = 'sub_items'
+
 class TodoListItem(object):
     def __init__(self, text, done=False):
         self.text = text
@@ -14,18 +18,14 @@ class TodoListItem(object):
     def add_sub_item(self, item):
         self.sub_items.append(item)
 
-    TEXT_FIELD = 'text'
-    DONE_FIELD = 'done'
-    SUB_ITEMS_FIELD = 'sub_items'
-    INDEX_SEP = '.'
 
     def to_serializable(self):
         item_list = []
         for item in self.sub_items:
-            item_dict = {TodoListItem.TEXT_FIELD: item.text,
-                         TodoListItem.DONE_FIELD: item.done}
+            item_dict = {TEXT_FIELD: item.text,
+                         DONE_FIELD: item.done}
             if item.sub_items:
-                item_dict[TodoListItem.SUB_ITEMS_FIELD] = item.to_serializable()
+                item_dict[SUB_ITEMS_FIELD] = item.to_serializable()
             item_list.append(item_dict)
         return item_list
 
@@ -71,9 +71,9 @@ class TodoListItem(object):
 
     @staticmethod
     def constrct_item_from_dict(item_dict):
-        item = TodoListItem(item_dict.get(TodoListItem.TEXT_FIELD, ''),
-                            done=item_dict.get(TodoListItem.DONE_FIELD, False))
-        sub_items = item_dict.get(TodoListItem.SUB_ITEMS_FIELD, None)
+        item = TodoListItem(item_dict.get(TEXT_FIELD, ''),
+                            done=item_dict.get(DONE_FIELD, False))
+        sub_items = item_dict.get(SUB_ITEMS_FIELD, None)
         if sub_items:
             for sub_item in sub_items:
                 item.add_sub_item(TodoListItem.constrct_item_from_dict(sub_item))
