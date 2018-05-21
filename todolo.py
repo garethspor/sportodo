@@ -56,7 +56,8 @@ def add_base(text, index=None):
 
 
 def add(args):
-    add_base(args.text)
+    index = TodoListIndex()
+    add_base(args.text, index=index)
 
 
 def addsub(args):
@@ -69,8 +70,9 @@ def set_done(index_str, val):
     td_list = TodoListItem.construct_from_json(list_path)
     index = TodoListIndex(index_str)
     item = td_list.get_item_by_indecies(index)
+    orig_index = TodoListIndex(index_str)
     item.done = val
-    print(item.to_str(index=index))
+    print(item.to_str(index=orig_index))
     td_list.to_json_file(list_path)
 
 

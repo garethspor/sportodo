@@ -33,18 +33,9 @@ class TodoListItem(object):
         with open(path, 'w') as fileobj:
             json.dump(self.to_serializable(), fileobj, indent=2)
 
-    @staticmethod
-    def format_indices(indicies):
-        if indicies is None:
-            return ''
-        if isinstance(indicies, basestring):
-            return indicies
-        return TodoListItem.INDEX_SEP.join([str(index) for index in indicies])
-
     def to_str(self, depth=0, index=None):
         indent = ' ' * depth
         check_box = '({})'.format('x' if self.done else ' ')
-        # prefix = TodoListItem.format_indices(indicies)
         out_str = '{}{} {} - {}'.format(indent, check_box, index, self.text)
         if self.sub_items:
             sub_item_str = self.sub_items_to_str(depth=depth + 1, index=index)
@@ -55,7 +46,6 @@ class TodoListItem(object):
         out_strs = []
         if index is None:
             index = TodoListIndex()
-        # indicies = indicies if indicies else []
         for sub_index, item in enumerate(self.sub_items):
             item_index = index.make_sub_index(sub_index)
             out_strs.append(item.to_str(depth=depth, index=item_index))
@@ -69,11 +59,6 @@ class TodoListItem(object):
         if next_index is None:
             return self
         return self.sub_items[next_index].get_item_by_indecies(index)
-
-    @staticmethod
-    def convert_string_to_indicies(str):
-        index_strings = str.split(TodoListItem.INDEX_SEP)
-        return [int(index) for index in index_strings]
 
     @staticmethod
     def construct_from_json(path):
@@ -105,7 +90,7 @@ class TodoListIndex():
             index_strs = init_index.split(INDEX_SEP)
             self.index_list = [int(index) for index in index_strs]
         else:
-            self.index_list = init_index
+            self.index_list = list(init_index)
 
     def __str__(self):
         return INDEX_SEP.join([str(index) for index in self.index_list])
@@ -121,6 +106,3 @@ class TodoListIndex():
         ret = TodoListIndex(self.index_list)
         ret.index_list.append(sub_index)
         return ret
-
-
-
