@@ -36,6 +36,8 @@ class TodoListItem(object):
     def format_indices(indicies):
         if indicies is None:
             return ''
+        if isinstance(indicies, basestring):
+            return indicies
         return TodoListItem.INDEX_SEP.join([str(index) for index in indicies])
 
     def to_str(self, depth=0, indicies=None):
