@@ -47,11 +47,21 @@ def list(args):
     print(find_and_load_list())
 
 
-def add(args):
+def add_base(text, index=None):
     list_path = find_list()
     td_list = TodoListItem.construct_from_json(list_path)
-    td_list.add_item(TodoListItem(args.text))
+    # td_list.add_sub_item(TodoListItem(text))
+    item = td_list.get_item_by_indecies(index)
+    item.add_sub_item(TodoListItem(text))
     td_list.to_json_file(list_path)
+
+
+def add(args):
+    add_base(args.text)
+
+
+def addsub(args):
+    add_base(args.text, index=args.index)
 
 
 def set_done(index, val):
@@ -62,11 +72,14 @@ def set_done(index, val):
     print(item.to_str(indicies=index))
     td_list.to_json_file(list_path)
 
+
 def done(args):
     set_done(args.index, True)
 
+
 def notdone(args):
     set_done(args.index, False)
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -105,6 +118,17 @@ def main():
         'index',
         help='index of todo')
     done_subparser.set_defaults(func=notdone)
+
+    addsub_subparser = subparsers.add_parser(
+        'addsub',
+        help='add an item that is a subitem of an existing item')
+    addsub_subparser.add_argument(
+        'index',
+        help='index of todo')
+    addsub_subparser.add_argument(
+        'text',
+        help='text of todo')
+    addsub_subparser.set_defaults(func=addsub)
 
     args = parser.parse_args()
     return args.func(args)

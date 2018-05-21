@@ -10,7 +10,7 @@ class TodoListItem(object):
         self.done = done
         self.sub_items = []
 
-    def add_item(self, item):
+    def add_sub_item(self, item):
         self.sub_items.append(item)
 
     TEXT_FIELD = 'text'
@@ -64,7 +64,7 @@ class TodoListItem(object):
     def get_item_by_indecies(self, indicies):
         if isinstance(indicies, basestring):
             return self.get_item_by_indecies(TodoListItem.convert_string_to_indicies(indicies))
-        if len(indicies) == 0:
+        if indicies is None or len(indicies) == 0:
             return self
         return self.sub_items[indicies[0]].get_item_by_indecies(indicies[1:])
 
@@ -79,7 +79,7 @@ class TodoListItem(object):
             data_list = json.load(fileobj)
         list = TodoListItem('main')
         for item_dict in data_list:
-            list.add_item(TodoListItem.constrct_item_from_dict(item_dict))
+            list.add_sub_item(TodoListItem.constrct_item_from_dict(item_dict))
         return list
 
     @staticmethod
@@ -89,5 +89,5 @@ class TodoListItem(object):
         sub_items = item_dict.get(TodoListItem.SUB_ITEMS_FIELD, None)
         if sub_items:
             for sub_item in sub_items:
-                item.add_item(TodoListItem.constrct_item_from_dict(sub_item))
+                item.add_sub_item(TodoListItem.constrct_item_from_dict(sub_item))
         return item
