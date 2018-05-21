@@ -91,3 +91,7 @@ class TodoListItem(object):
             for sub_item in sub_items:
                 item.add_sub_item(TodoListItem.constrct_item_from_dict(sub_item))
         return item
+
+class TodoListIndex(object):
+    def __init__(self, index_str=''):
+        # parse index_str into list of numbers
